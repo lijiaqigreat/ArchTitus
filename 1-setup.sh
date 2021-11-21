@@ -7,17 +7,8 @@
 #  ██║  ██║██║  ██║╚██████╗██║  ██║   ██║   ██║   ██║   ╚██████╔╝███████║
 #  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
 #-------------------------------------------------------------------------
-echo "--------------------------------------"
-echo "--          Network Setup           --"
-echo "--------------------------------------"
-pacman -S networkmanager dhclient --noconfirm --needed
-systemctl enable --now NetworkManager
-echo "-------------------------------------------------"
-echo "Setting up mirrors for optimal download          "
-echo "-------------------------------------------------"
-pacman -S --noconfirm pacman-contrib curl
-pacman -S --noconfirm reflector rsync
-cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+set -e
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 nc=$(grep -c ^processor /proc/cpuinfo)
 echo "You have " $nc" cores."
@@ -34,7 +25,7 @@ echo "       Setup Language to US and set locale       "
 echo "-------------------------------------------------"
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
-timedatectl --no-ask-password set-timezone America/Chicago
+timedatectl --no-ask-password set-timezone America/Los_Angeles
 timedatectl --no-ask-password set-ntp 1
 localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
 
@@ -48,164 +39,28 @@ sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /et
 sed -i 's/^#Para/Para/' /etc/pacman.conf
 
 #Enable multilib
-sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+# sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+
 pacman -Sy --noconfirm
 
 echo -e "\nInstalling Base System\n"
 
 PKGS=(
-'mesa' # Essential Xorg First
-'xorg'
-'xorg-server'
-'xorg-apps'
-'xorg-drivers'
-'xorg-xkill'
-'xorg-xinit'
-'xterm'
-'plasma-desktop' # KDE Load second
-'alsa-plugins' # audio plugins
-'alsa-utils' # audio utils
-'ark' # compression
-'audiocd-kio' 
-'autoconf' # build
-'automake' # build
-'base'
-'bash-completion'
-'bind'
-'binutils'
-'bison'
-'bluedevil'
-'bluez'
-'bluez-libs'
-'bluez-utils'
-'breeze'
-'breeze-gtk'
-'bridge-utils'
-'btrfs-progs'
-'celluloid' # video players
-'cmatrix'
-'code' # Visual Studio code
-'cronie'
-'cups'
-'dialog'
-'discover'
-'dolphin'
-'dosfstools'
-'dtc'
-'efibootmgr' # EFI boot
-'egl-wayland'
-'exfat-utils'
-'extra-cmake-modules'
-'filelight'
-'flex'
-'fuse2'
-'fuse3'
-'fuseiso'
-'gamemode'
-'gcc'
-'gimp' # Photo editing
-'git'
-'gparted' # partition management
-'gptfdisk'
 'grub'
-'grub-customizer'
-'gst-libav'
-'gst-plugins-good'
-'gst-plugins-ugly'
-'gwenview'
-'haveged'
-'htop'
-'iptables-nft'
-'jdk-openjdk' # Java 17
-'kate'
-'kcodecs'
-'kcoreaddons'
-'kdeplasma-addons'
-'kde-gtk-config'
-'kinfocenter'
-'kscreen'
-'kvantum-qt5'
-'kitty'
-'konsole'
-'kscreen'
-'layer-shell-qt'
-'libdvdcss'
-'libnewt'
-'libtool'
-'linux'
-'linux-firmware'
-'linux-headers'
-'lsof'
-'lutris'
-'lzop'
-'m4'
-'make'
-'milou'
-'nano'
-'neofetch'
 'networkmanager'
-'ntfs-3g'
-'ntp'
-'okular'
-'openbsd-netcat'
-'openssh'
-'os-prober'
-'oxygen'
-'p7zip'
-'pacman-contrib'
-'patch'
-'picom'
-'pkgconf'
-'plasma-meta'
-'plasma-nm'
-'powerdevil'
-'powerline-fonts'
-'print-manager'
-'pulseaudio'
-'pulseaudio-alsa'
-'pulseaudio-bluetooth'
-'python-notify2'
-'python-psutil'
-'python-pyqt5'
-'python-pip'
-'qemu'
-'rsync'
-'sddm'
-'sddm-kcm'
-'snapper'
-'spectacle'
-'steam'
-'sudo'
-'swtpm'
-'synergy'
-'systemsettings'
-'terminus-font'
-'traceroute'
-'ufw'
-'unrar'
-'unzip'
-'usbutils'
-'vim'
-'virt-manager'
-'virt-viewer'
-'wget'
-'which'
-'wine-gecko'
-'wine-mono'
-'winetricks'
-'xdg-desktop-portal-kde'
-'xdg-user-dirs'
-'zeroconf-ioslave'
-'zip'
-'zsh'
-'zsh-syntax-highlighting'
-'zsh-autosuggestions'
-)
 
-for PKG in "${PKGS[@]}"; do
-    echo "INSTALLING: ${PKG}"
-    sudo pacman -S "$PKG" --noconfirm --needed
-done
+'xfce4'
+
+'git'
+
+)
+PKGS=$(echo $PKGS | sed 's/,/ /g')
+sudo pacman -S --noconfirm --needed $PKGS
+
+echo "--------------------------------------"
+echo "--          Network Setup           --"
+echo "--------------------------------------"
+systemctl enable --now NetworkManager
 
 #
 # determine processor type and install microcode
@@ -235,19 +90,26 @@ elif lspci | grep -E "Integrated Graphics Controller"; then
 fi
 
 echo -e "\nDone!\n"
-if ! source install.conf; then
+# TODO
+if ! source $SCRIPT_DIR/install.conf; then
 	read -p "Please enter username:" username
-echo "username=$username" >> ${HOME}/ArchTitus/install.conf
-fi
-if [ $(whoami) = "root"  ];
-then
-    useradd -m -G wheel,libvirt -s /bin/bash $username 
-	passwd $username
-	cp -R /root/ArchTitus /home/$username/
-    chown -R $username: /home/$username/ArchTitus
-	read -p "Please name your machine:" nameofmachine
-	echo $nameofmachine > /etc/hostname
-else
-	echo "You are already a user proceed with aur installs"
+	read -p "Please name your machine:" hostname
+  echo "username=$username" >> ${HOME}/ArchTitus/install.conf
 fi
 
+useradd -m -G wheel -s /bin/bash $username 
+if [ ! -z $password ]
+then
+  passwd $username
+else
+  echo "$username:$password" | chpasswd
+fi
+cp -R /root/ArchTitus /home/$username/
+chown -R $username: /home/$username/ArchTitus
+echo $hostname > /etc/hostname
+
+if [[ -d "/sys/firmware/efi" ]]; then
+    #TODO
+    grub-install --efi-directory=/boot /dev/vda
+fi
+grub-mkconfig -o /boot/grub/grub.cfg
