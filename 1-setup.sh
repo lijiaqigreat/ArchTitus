@@ -9,6 +9,7 @@
 #-------------------------------------------------------------------------
 set -e
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="/root/ArchTitus"
 
 nc=$(grep -c ^processor /proc/cpuinfo)
 echo "You have " $nc" cores."
@@ -46,21 +47,27 @@ pacman -Sy --noconfirm
 echo -e "\nInstalling Base System\n"
 
 PKGS=(
-'grub'
-'networkmanager'
+'grub' # boot loader
 
+'networkmanager'
+'efibootmgr'
+
+'xorg-server'
 'xfce4'
+'xfce4-goodies'
+'lightdm' # Login Manager
+'lightdm-gtk-greeter'
+
+'baobab' # Disk Analyzer
 
 'git'
-
+'openssh'
 )
-PKGS=$(echo $PKGS | sed 's/,/ /g')
-sudo pacman -S --noconfirm --needed $PKGS
+sudo pacman -S --noconfirm --needed ${PKGS[*]}
 
-echo "--------------------------------------"
-echo "--          Network Setup           --"
-echo "--------------------------------------"
-systemctl enable --now NetworkManager
+#TODO removed --now
+systemctl enable NetworkManager
+systemctl enable lightdm
 
 #
 # determine processor type and install microcode
@@ -94,17 +101,16 @@ echo -e "\nDone!\n"
 if ! source $SCRIPT_DIR/install.conf; then
 	read -p "Please enter username:" username
 	read -p "Please name your machine:" hostname
-  echo "username=$username" >> ${HOME}/ArchTitus/install.conf
 fi
 
 useradd -m -G wheel -s /bin/bash $username 
-if [ ! -z $password ]
+if [ -z $password ]
 then
   passwd $username
 else
   echo "$username:$password" | chpasswd
 fi
-cp -R /root/ArchTitus /home/$username/
+cp -R $SCRIPT_DIR /home/$username/
 chown -R $username: /home/$username/ArchTitus
 echo $hostname > /etc/hostname
 
