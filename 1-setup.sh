@@ -62,6 +62,7 @@ PKGS=(
 'openssh'
 'tmux'
 'fzf'
+'bash-completion'
 )
 sudo pacman -S --noconfirm --needed ${PKGS[*]}
 

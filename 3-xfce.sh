@@ -11,7 +11,6 @@ PKGS=(
 'lightdm-gtk-greeter'
 # 'gnome-system-monitor'
 'baobab' # Disk Analyzer
-'google-chrome'
 'adobe-source-han-sans-otc-fonts' # Chinese fonts
 'ibus-pinyin'
 )
@@ -20,15 +19,14 @@ PKGS_YAY=(
 'mint-themes'
 'mint-y-icons'
 'xfce4-panel-profiles'
+'google-chrome'
 )
 
 yay -S --noconfirm ${PKGS_YAY[*]}
 
-MINT_THEME="Mint-Dark-Blue"
-xfconf-query -c xsettings -p /Net/ThemeName -s $MINT_THEME
-xfconf-query -c xsettings -p /Net/IconThemeName -s $MINT_THEME
-#TODO
-xfce4-panel-profiles load $SCRIPT_DIR/v1.tar.bz2
+sudo systemctl enable lightdm
+
+mkdir -p ~/.config/autostart/
 
 # Autostart ibus
 cat > ~/.config/autostart/ibus.desktop <<EOF
@@ -45,6 +43,12 @@ StartupNotify=false
 Terminal=false
 Hidden=false
 EOF
+
+#MINT_THEME="Mint-Dark-Blue"
+#xfconf-query -c xsettings -p /Net/ThemeName -s $MINT_THEME
+#xfconf-query -c xsettings -p /Net/IconThemeName -s $MINT_THEME
+##TODO
+#xfce4-panel-profiles load $SCRIPT_DIR/v1.tar.bz2
 
 echo -e "\nDone!\n"
 exit

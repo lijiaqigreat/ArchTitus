@@ -27,7 +27,7 @@ echo "-------------------------------------------------"
 iso=$(curl -4 ifconfig.co/country-iso)
 timedatectl set-ntp true
 sed -i 's/^#Para/Para/' /etc/pacman.conf
-pacman -S --noconfirm --needed reflector
+pacman -S --noconfirm --needed reflector rsync
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 echo -e "-------------------------------------------------------------------------"
 echo -e "   █████╗ ██████╗  ██████╗██╗  ██╗████████╗██╗████████╗██╗   ██╗███████╗"
