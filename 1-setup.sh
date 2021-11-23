@@ -29,6 +29,8 @@ locale-gen
 timedatectl --no-ask-password set-timezone America/Los_Angeles
 timedatectl --no-ask-password set-ntp 1
 localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
+echo -e "pause"
+read TMP
 
 # Set keymaps
 localectl --no-ask-password set-keymap us
@@ -48,26 +50,23 @@ echo -e "\nInstalling Base System\n"
 
 PKGS=(
 'grub' # boot loader
-
-'networkmanager'
 'efibootmgr'
+'networkmanager'
 
-'xorg-server'
-'xfce4'
-'xfce4-goodies'
-'lightdm' # Login Manager
-'lightdm-gtk-greeter'
+'htop'
+'ncdu'
 
-'baobab' # Disk Analyzer
-
+'base-devel'
+'man-db'
 'git'
 'openssh'
+'tmux'
+'fzf'
 )
 sudo pacman -S --noconfirm --needed ${PKGS[*]}
 
-#TODO removed --now
 systemctl enable NetworkManager
-systemctl enable lightdm
+systemctl enable sshd
 
 #
 # determine processor type and install microcode
@@ -101,6 +100,7 @@ echo -e "\nDone!\n"
 if ! source $SCRIPT_DIR/install.conf; then
 	read -p "Please enter username:" username
 	read -p "Please name your machine:" hostname
+  echo username=$username > install.conf
 fi
 
 useradd -m -G wheel -s /bin/bash $username 
