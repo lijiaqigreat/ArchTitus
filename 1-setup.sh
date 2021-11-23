@@ -29,8 +29,6 @@ locale-gen
 timedatectl --no-ask-password set-timezone America/Los_Angeles
 timedatectl --no-ask-password set-ntp 1
 localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
-echo -e "pause"
-read TMP
 
 # Set keymaps
 localectl --no-ask-password set-keymap us
