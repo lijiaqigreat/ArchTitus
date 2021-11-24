@@ -7,17 +7,24 @@
 #  ██║  ██║██║  ██║╚██████╗██║  ██║   ██║   ██║   ██║   ╚██████╔╝███████║
 #  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
 #-------------------------------------------------------------------------
-
-echo "-------------------------------------------------"
-echo "-------select your disk to format----------------"
-echo "-------------------------------------------------"
+read -p "Enter username (default: forrest): " username
+username=${username:-forrest}
+read -p "Enter hostname (default: $username-arch): " hostname
+hostname=${hostname:-"$username-arch"}
 lsblk
-echo "Please enter disk to work on (default: /dev/vda):"
-read DISK
+read -p "Please enter disk to work on (default: /dev/vda): " DISK
 DISK=${DISK:-/dev/vda}
 echo "THIS WILL FORMAT AND DELETE ALL DATA ON THE DISK"
 read -p "are you sure you want to continue (Y/n):" formatdisk
 formatdisk=${formatdisk:-y}
+case $formatdisk in
+y|Y|yes|Yes|YES)
+  ;;
+*)
+  echo "Exiting"
+  exit
+;;
+esac
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 

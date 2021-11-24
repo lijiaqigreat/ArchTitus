@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 set -e
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-SCRIPT_DIR="$HOME/ArchTitus"
 
 PKGS=(
-'xorg-server'
-'xfce4'
-'xfce4-goodies'
-'lightdm' # Login Manager
-'lightdm-gtk-greeter'
 # 'gnome-system-monitor'
 'baobab' # Disk Analyzer
 'adobe-source-han-sans-otc-fonts' # Chinese fonts
@@ -23,8 +16,6 @@ PKGS_YAY=(
 )
 
 yay -S --noconfirm ${PKGS_YAY[*]}
-
-sudo systemctl enable lightdm
 
 mkdir -p ~/.config/autostart/
 
