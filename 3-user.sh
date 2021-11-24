@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+
 #-------------------------------------------------------------------------
 #   █████╗ ██████╗  ██████╗██╗  ██╗████████╗██╗████████╗██╗   ██╗███████╗
 #  ██╔══██╗██╔══██╗██╔════╝██║  ██║╚══██╔══╝██║╚══██╔══╝██║   ██║██╔════╝
@@ -8,19 +8,14 @@ set -e
 #  ██║  ██║██║  ██║╚██████╗██║  ██║   ██║   ██║   ██║   ╚██████╔╝███████║
 #  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
 #-------------------------------------------------------------------------
+
+set -e
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$HOME/ArchTitus"
+cd $SCRIPT_DIR
 
-# setup pacman
-sh 110-pacman.sh
-# format disk
-# sh 120-efi-btrfs.sh 
-sh 121-bios-btrfs.sh 
-# install arch to disk
-sh 130-arch.sh
-# add swap file to /mnt
-# sh 140-swap-btrfs.sh 2048
+sh 3-yay.sh
+sh 3-xfce.sh
+sh 3-xfce-extra.sh
 
-#TODO
-if [[ ! -d "/sys/firmware/efi" ]]; then
-    grub-install --boot-directory=/mnt/boot ${DISK}
-fi
+echo -e "\nDone!\n"
