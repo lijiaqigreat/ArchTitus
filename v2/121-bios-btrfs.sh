@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+set -e
 mkdir -p /mnt
 
 sgdisk -Z ${DISK} # zap all on disk

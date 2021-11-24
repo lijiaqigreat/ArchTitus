@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 
 proc_type=$(lscpu | awk '/Vendor ID:/ {print $3}')

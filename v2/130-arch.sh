@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 pacstrap /mnt base linux linux-firmware vim sudo archlinux-keyring --noconfirm --needed
 genfstab -U /mnt >> /mnt/etc/fstab

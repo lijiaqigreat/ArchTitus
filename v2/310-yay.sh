@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 cd ~
 git clone "https://aur.archlinux.org/yay-bin.git"

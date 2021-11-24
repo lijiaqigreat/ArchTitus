@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 echo "-------------------------------------------------"
 echo "Setting up mirrors for optimal download          "

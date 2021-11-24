@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 size=${1:-2048}
 

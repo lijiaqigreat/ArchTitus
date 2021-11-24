@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 nc=$(grep -c ^processor /proc/cpuinfo)
 nc=${1:-nc}

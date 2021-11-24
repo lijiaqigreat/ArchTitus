@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 read -p "Enter username (default: forrest): " username
 username=${username:-forrest}
